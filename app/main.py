@@ -16,14 +16,31 @@ app.add_middleware(
 def home():
     return {"message": "MARL Backend Running"}
 
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+
+#     num_agents = 3
+#     episodes = 10
+
+#     async for data in run_simulation_stream(num_agents, episodes):
+#         await websocket.send_json(data)
+
+#     await websocket.close()
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    print("Client connected ✅")
 
     num_agents = 3
     episodes = 10
 
-    async for data in run_simulation_stream(num_agents, episodes):
-        await websocket.send_json(data)
+    try:
+        async for data in run_simulation_stream(num_agents, episodes):
+            await websocket.send_json(data)
 
-    await websocket.close()
+    except Exception as e:
+        print("Error:", e)
+
+    print("Client disconnected ❌")

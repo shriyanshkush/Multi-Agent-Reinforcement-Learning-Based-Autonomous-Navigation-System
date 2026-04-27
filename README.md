@@ -86,7 +86,7 @@ Where:
 
 ## 📌 2. Action-Value Function (Q-Function)
 
-# Q∗(s,a)\=max⁡πE\[∑t\=0∞γtrt\]Q^\*(s,a) = \\max\_{\\pi} \\mathbb{E} \\left\[ \\sum\_{t=0}^{\\infty} \\gamma^t r\_t \\right\]Q∗(s,a)\=πmax​E\[t\=0∑∞​γtrt​\]
+# Q^*(s,a) = \max_{\pi} \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \right]
 
 This represents the **expected cumulative reward** for taking action aaa in state sss.
 

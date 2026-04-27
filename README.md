@@ -85,7 +85,7 @@ Represents the **expected cumulative reward** for taking action $a$ in state $s$
 ## 📌 3. Bellman Optimality Principle
 
 $$
-Q^{*}(s,a) = r + \gamma \max_{a^{\prime}} Q^{*}(s^{\prime}, a^{\prime})
+Q^{*}(s, a) = r + \gamma \max_{a'} Q^{*}(s', a')
 $$
 
 The value of a state-action pair depends on:

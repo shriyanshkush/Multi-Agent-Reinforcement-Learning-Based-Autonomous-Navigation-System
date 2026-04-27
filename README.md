@@ -82,8 +82,6 @@ Represents the **expected cumulative reward** for taking action $a$ in state $s$
 
 ---
 
----
-
 ## 📌 3. Bellman Optimality Principle
 
 $$

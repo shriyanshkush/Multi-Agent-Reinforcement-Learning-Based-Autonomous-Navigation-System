@@ -85,15 +85,14 @@ Represents the **expected cumulative reward** for taking action $a$ in state $s$
 ## 📌 3. Bellman Optimality Principle
 
 $$
-Q^*(s,a) = r + \gamma \max_{a'} Q^*(s', a')
+Q^{*}(s,a) = r + \gamma \max_{a^{\prime}} Q^{*}(s^{\prime}, a^{\prime})
 $$
 
 The value of a state-action pair depends on:
-- Immediate reward
-- Best future reward
+- Immediate reward  
+- Best future reward  
 
 ---
-
 ## 📌 4. Q-Learning Update Rule
 
 $$

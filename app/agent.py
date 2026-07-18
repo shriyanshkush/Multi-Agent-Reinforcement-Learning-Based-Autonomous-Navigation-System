@@ -1,22 +1,50 @@
-import random
+from app.algorithms import (
+    QLearningAgent,
+    SARSAAgent,
+    MonteCarloAgent,
+    DQNAgent,
+    EpsilonGreedyExploration,
+    BoltzmannExploration,
+    UCBExploration
+)
 
-class QLearningAgent:
-    def __init__(self, grid_size=5):
-        self.q_table = {
-            (x, y): [0.0] * 4
-            for x in range(grid_size)
-            for y in range(grid_size)
-        }
+def create_agent(algorithm="q_learning", config=None, grid_size=5):
+    """
+    Factory function to instantiate the requested RL agent with custom exploration and hyperparameters.
+    """
+    if config is None:
+        config = {}
 
-        self.lr = 0.1
-        self.gamma = 0.9
-        self.epsilon = 0.3
+    lr = float(config.get("lr", 0.1))
+    gamma = float(config.get("gamma", 0.9))
+    exploration_type = config.get("exploration", "epsilon_greedy")
 
-    def choose_action(self, state):
-        if random.random() < self.epsilon:
-            return random.randint(0, 3)
-        return self.q_table[state].index(max(self.q_table[state]))
+    # Build exploration strategy
+    if exploration_type == "epsilon_greedy":
+        epsilon = float(config.get("epsilon", 0.5))
+        epsilon_min = float(config.get("epsilon_min", 0.05))
+        epsilon_decay = float(config.get("epsilon_decay", 0.98))
+        exploration = EpsilonGreedyExploration(epsilon=epsilon, epsilon_min=epsilon_min, epsilon_decay=epsilon_decay)
+    elif exploration_type == "boltzmann":
+        temp = float(config.get("temp", config.get("epsilon", 0.5)))
+        temp_min = float(config.get("temp_min", 0.05))
+        temp_decay = float(config.get("temp_decay", config.get("epsilon_decay", 0.98)))
+        exploration = BoltzmannExploration(temp=temp, temp_min=temp_min, temp_decay=temp_decay)
+    elif exploration_type == "ucb":
+        c = float(config.get("ucb_c", 1.414))
+        exploration = UCBExploration(c=c)
+    else:
+        exploration = EpsilonGreedyExploration()
 
-    def learn(self, s, a, r, s_):
-        target = r + self.gamma * max(self.q_table[s_])
-        self.q_table[s][a] += self.lr * (target - self.q_table[s][a])
+    # Build agent algorithm
+    algo = algorithm.lower().replace("-", "_")
+    if algo in ["q_learning", "qlearning"]:
+        return QLearningAgent(grid_size=grid_size, lr=lr, gamma=gamma, exploration=exploration)
+    elif algo in ["sarsa"]:
+        return SARSAAgent(grid_size=grid_size, lr=lr, gamma=gamma, exploration=exploration)
+    elif algo in ["monte_carlo", "montecarlo", "mc"]:
+        return MonteCarloAgent(grid_size=grid_size, lr=lr, gamma=gamma, exploration=exploration)
+    elif algo in ["dqn", "dqn_lite", "deep_q"]:
+        return DQNAgent(grid_size=grid_size, lr=lr, gamma=gamma, exploration=exploration)
+    else:
+        return QLearningAgent(grid_size=grid_size, lr=lr, gamma=gamma, exploration=exploration)

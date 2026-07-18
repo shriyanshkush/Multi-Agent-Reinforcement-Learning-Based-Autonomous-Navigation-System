@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARL 3D Autonomous Robotics Studio</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="studio-wrapper">
+    <!-- Header / Navbar -->
+    <header class="studio-header">
+        <div class="header-brand">
+            <div class="logo-icon">🤖</div>
+            <div>
+                <h1>MARL Autonomous Production Studio</h1>
+                <p class="subtitle">3D Cyber-Physical Multi-Agent Reinforcement Learning Platform</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="control-bar">
+                <button id="btnStart" class="btn btn-primary" title="Start or Restart Training with current settings">
+                    <span class="btn-icon">🚀</span> Start Training
+                </button>
+                <button id="btnPause" class="btn btn-secondary" title="Pause simulation">
+                    <span class="btn-icon">⏸️</span> Pause
+                </button>
+                <button id="btnResume" class="btn btn-secondary" style="display: none;" title="Resume simulation">
+                    <span class="btn-icon">▶️</span> Resume
+                </button>
+                <button id="btnStop" class="btn btn-danger" title="Stop and reset">
+                    <span class="btn-icon">⏹️</span> Reset
+                </button>
+            </div>
+            <div id="connectionStatus" class="status-badge status-disconnected">
+                <span class="status-dot"></span> Disconnected
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="studio-body">
+        <!-- Left Sidebar: Configuration & Hyperparameters -->
+        <aside class="panel sidebar-config">
+            <div class="panel-header">
+                <h3>⚙️ Algorithm & Exploration</h3>
+            </div>
+            
+            <div class="config-section">
+                <label class="form-label" for="selectAlgorithm">Training Algorithm</label>
+                <select id="selectAlgorithm" class="form-select">
+                    <option value="q_learning">Q-Learning (Off-Policy TD)</option>
+                    <option value="sarsa">SARSA (On-Policy TD)</option>
+                    <option value="monte_carlo">Monte Carlo Control</option>
+                    <option value="dqn">Deep Q-Network (DQN Lite)</option>
+                </select>
+
+                <label class="form-label" for="selectExploration">Exploration Strategy</label>
+                <select id="selectExploration" class="form-select">
+                    <option value="epsilon_greedy">Epsilon-Greedy (Decaying ε)</option>
+                    <option value="boltzmann">Boltzmann / Softmax (Temp T)</option>
+                    <option value="ucb">Upper Confidence Bound (UCB)</option>
+                </select>
+
+                <label class="form-label" for="selectTeamMode">MARL Team Goal</label>
+                <select id="selectTeamMode" class="form-select">
+                    <option value="independent">Independent Agents (Personal Rewards)</option>
+                    <option value="cooperative">Cooperative Team (Shared Rewards)</option>
+                </select>
+            </div>
+
+            <div class="panel-header" style="margin-top: 16px;">
+                <h3>🎛️ Hyperparameters</h3>
+            </div>
+
+            <div class="config-sliders">
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Learning Rate (α)</span>
+                        <span id="valLr" class="slider-val">0.10</span>
+                    </div>
+                    <input type="range" id="inputLr" min="0.01" max="1.00" step="0.01" value="0.10" class="form-range">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Discount Factor (γ)</span>
+                        <span id="valGamma" class="slider-val">0.90</span>
+                    </div>
+                    <input type="range" id="inputGamma" min="0.10" max="0.99" step="0.01" value="0.90" class="form-range">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span id="labelExplorationRate">Exploration Rate (ε / T)</span>
+                        <span id="valEpsilon" class="slider-val">0.50</span>
+                    </div>
+                    <input type="range" id="inputEpsilon" min="0.01" max="1.00" step="0.01" value="0.50" class="form-range">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Decay Rate per Episode</span>
+                        <span id="valDecay" class="slider-val">0.980</span>
+                    </div>
+                    <input type="range" id="inputDecay" min="0.900" max="1.000" step="0.005" value="0.980" class="form-range">
+                </div>
+            </div>
+
+            <div class="panel-header" style="margin-top: 16px;">
+                <h3>🌐 Environment Setup</h3>
+            </div>
+
+            <div class="config-section">
+                <div class="row-inputs">
+                    <div>
+                        <label class="form-label" for="inputNumAgents">Agents</label>
+                        <select id="inputNumAgents" class="form-select">
+                            <option value="1">1 Agent</option>
+                            <option value="2">2 Agents</option>
+                            <option value="3" selected>3 Agents</option>
+                            <option value="4">4 Agents</option>
+                            <option value="5">5 Agents</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="selectGridSize">Grid Size</label>
+                        <select id="selectGridSize" class="form-select">
+                            <option value="5" selected>5x5 Grid</option>
+                            <option value="6">6x6 Grid</option>
+                            <option value="7">7x7 Grid</option>
+                            <option value="8">8x8 Grid</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="form-label" for="selectObstacles">Obstacles Layout</label>
+                <select id="selectObstacles" class="form-select">
+                    <option value="standard" selected>Standard Industrial</option>
+                    <option value="maze">Winding Maze Corridor</option>
+                    <option value="bottleneck">Center Bottleneck Gate</option>
+                    <option value="random">Random Hazard Cluster</option>
+                    <option value="open">Open Empty Arena</option>
+                </select>
+
+                <div class="slider-group" style="margin-top: 12px;">
+                    <div class="slider-label">
+                        <span>Simulation Speed (Step Delay)</span>
+                        <span id="valDelay" class="slider-val">0.15s</span>
+                    </div>
+                    <input type="range" id="inputDelay" min="0.02" max="0.50" step="0.02" value="0.15" class="form-range">
+                </div>
+            </div>
+
+            <button id="btnApplyConfig" class="btn btn-accent w-100 style-apply-btn">
+                ⚡ Apply Config & Restart Loop
+            </button>
+        </aside>
+
+        <!-- Center Viewport: 3D / 2D / Policy Visualizations -->
+        <section class="panel viewport-panel">
+            <div class="viewport-header">
+                <div class="tabs-bar">
+                    <button class="tab-btn active" data-tab="3d">
+                        <span>🕹️ 3D Cyber-Robot Arena</span>
+                    </button>
+                    <button class="tab-btn" data-tab="2d">
+                        <span>🗺️ 2D Tactical Grid</span>
+                    </button>
+                    <button class="tab-btn" data-tab="policy">
+                        <span>📊 Q-Table & Policy Inspector</span>
+                    </button>
+                </div>
+                <div class="viewport-legend" id="viewportLegend">
+                    <span class="legend-item"><span class="legend-box goal-box"></span> Energy Goal</span>
+                    <span class="legend-item"><span class="legend-box hazard-box"></span> Hazard Pillar</span>
+                    <span class="legend-item"><span class="legend-box agent-box"></span> Autonomous Units</span>
+                </div>
+            </div>
+
+            <div class="viewport-content">
+                <!-- 3D Arena Viewport -->
+                <div id="viewport-3d" class="tab-pane active">
+                    <div class="viewport-overlay-tip">🖱️ Left Click + Drag to Rotate | Right Click + Drag to Pan | Scroll to Zoom</div>
+                    <div id="threeContainer"></div>
+                </div>
+
+                <!-- 2D Tactical Grid Viewport -->
+                <div id="viewport-2d" class="tab-pane">
+                    <div class="grid-wrapper">
+                        <div id="grid" class="simulation-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Policy & Q-Table Heatmap Viewport -->
+                <div id="viewport-policy" class="tab-pane">
+                    <div class="policy-wrapper">
+                        <div class="policy-info">
+                            <p>Live Q-Table Matrix & Optimal Policy Action Legend for <strong>Agent 0</strong>. Arrows indicate greedy optimal step selection $(\arg\max_a Q(s,a))$.</p>
+                        </div>
+                        <div id="policy-grid" class="policy-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Sidebar: Live Telemetry & Analytics -->
+        <aside class="panel sidebar-telemetry">
+            <div class="panel-header">
+                <h3>📡 Live Telemetry & Stats</h3>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Episode Index</div>
+                    <div class="stat-value text-accent" id="currentEpisode">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Step Progress</div>
+                    <div class="stat-value text-blue" id="currentStep">-- / --</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Exploration (ε/T/c)</div>
+                    <div class="stat-value text-warning" id="currentExploration">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Collisions Avoided / Hit</div>
+                    <div class="stat-value text-danger" id="currentCollisions">0</div>
+                </div>
+            </div>
+
+            <div class="rewards-section">
+                <div class="panel-header style-rewards-header">
+                    <h4>Instantaneous Agent Step Rewards</h4>
+                    <span class="badge-status">LIVE</span>
+                </div>
+                <div id="rewardList" class="reward-list-container">
+                    Waiting for pipeline metrics...
+                </div>
+            </div>
+
+            <div class="panel-header" style="margin-top: 18px;">
+                <h3>📈 Performance Analytics</h3>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="rewardChart"></canvas>
+            </div>
+        </aside>
+    </main>
+</div>
+
+<!-- Scripts -->
+<script src="js/chart-config.js"></script>
+<script src="js/renderer-3d.js"></script>
+<script src="js/renderer-2d.js"></script>
+<script src="js/renderer-policy.js"></script>
+<script src="js/websocket.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -11,7 +11,7 @@ In this simulator, multiple autonomous agents (robotic units) learn optimal navi
 
 ---
 
-## ✨ Key Enhancements & Features
+## ✨ Key Features
 
 | Feature | Description |
 | :--- | :--- |

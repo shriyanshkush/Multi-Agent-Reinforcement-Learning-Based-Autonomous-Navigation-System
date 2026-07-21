@@ -274,6 +274,9 @@ class DQNAgent(BaseAgent):
             target_val = r if done else r + self.gamma * max(q_next)
             error = target_val - q_vals[a]
 
+            # Snapshot W2 values before backpropagation update to ensure exact gradient calculation for W1
+            old_w2_col = [self.W2[h][a] for h in range(self.hidden_size)]
+
             # Backpropagation gradient descent
             # dQ/dA_output = error
             # Update W2 and b2 for action a
@@ -283,10 +286,10 @@ class DQNAgent(BaseAgent):
 
             self.b2[a] += self.lr * error
 
-            # Backprop to hidden layer
+            # Backprop to hidden layer using pre-update old_w2_col
             for h in range(self.hidden_size):
                 if hidden[h] > 0:  # ReLU derivative
-                    grad_h = error * self.W2[h][a]
+                    grad_h = error * old_w2_col[h]
                     self.W1[0][h] += self.lr * grad_h * s_vec[0]
                     self.W1[1][h] += self.lr * grad_h * s_vec[1]
                     self.b1[h] += self.lr * grad_h
@@ -303,5 +306,6 @@ class DQNAgent(BaseAgent):
             for y in range(self.grid_size):
                 s_vec = self._state_vector((x, y))
                 q_vals, _, _ = self._forward(s_vec)
+                self.q_table[(x, y)] = q_vals
                 res[f"{x},{y}"] = [round(val, 3) for val in q_vals]
         return res

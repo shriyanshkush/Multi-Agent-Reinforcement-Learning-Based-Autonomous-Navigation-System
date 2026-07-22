@@ -323,4 +323,4 @@ Once opened, the dashboard will automatically connect to the WebSocket server (`
 
 ---
 
-*Built by the MARL Autonomous Robotics Research Team.*
+*Built by Shriyansh Kushwaha.*

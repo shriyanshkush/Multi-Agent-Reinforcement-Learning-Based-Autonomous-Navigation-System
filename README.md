@@ -1,204 +1,220 @@
-# 🤖 MARL Autonomous Production Studio 🚀
-### **3D Cyber-Physical Multi-Agent Reinforcement Learning Platform**
+# MARL Autonomous Learning & Visualization Studio
+
+An interactive, real-time laboratory and visual simulation engine designed for learning, experimenting with, and analyzing **Multi-Agent Reinforcement Learning (MARL)** algorithms and spatial coordination dynamics.
 
 ---
 
-## 📌 Executive Summary & Overview
+## 📌 Project Overview & Educational Goals
 
-The **MARL Autonomous Production Studio** is a state-of-the-art simulation and visualization platform designed to model, train, and analyze multi-agent autonomous systems. Originally conceived as a basic grid-based Q-Learning script, this project has been **completely re-engineered and enhanced** into a full-stack, real-time cyber-physical robotics environment.
+The **MARL Autonomous Learning Studio** bridges the gap between reinforcement learning mathematical theory and real-time visual intuition. Originally designed as a standard grid-world benchmark, this platform provides an interactive environment where developers, students, and researchers can observe how decentralized autonomous agents learn policies, navigate obstacles, and resolve team traffic conflicts.
 
-In this simulator, multiple autonomous agents (robotic units) learn optimal navigation policies to reach energy pedestals while avoiding industrial hazards and inter-agent collisions. By combining an **async FastAPI simulation engine**, a **modular multi-algorithm reinforcement learning backend**, and an **interactive 3D/2D web-based studio**, this project demonstrates how autonomous coordination emerges from mathematical formulation and decentralized learning.
+By pairing an **asynchronous FastAPI simulation engine** with a rich **3D Three.js visualizer**, **live state-action ($Q(s,a)$) policy heatmaps**, and **WebSocket telemetry streams**, the studio enables direct inspection of reinforcement learning mechanics as they unfold.
 
 ---
 
-## ✨ Key Features
+## 🔑 Key Visual & Educational Features
 
-| Feature | Description |
+| Visualizer & Feature | Educational Objective |
 | :--- | :--- |
-| **🧠 Multi-Algorithm Suite** | Includes **Q-Learning** (Off-Policy TD), **SARSA** (On-Policy TD), **Monte Carlo Control** (Return Estimation), and a pure-Python **Deep Q-Network (DQN Lite)** with experience replay and synchronized target networks. |
-| **🔍 Advanced Exploration** | Dynamically switch between **$\epsilon$-Greedy** (decaying random rates), **Boltzmann / Softmax** (temperature-based probabilities), and **Upper Confidence Bound (UCB)** (uncertainty optimism). |
-| **🤝 Multi-Agent Team Modes** | Configure agents as **Independent Learners** (optimizing individual returns) or **Cooperative Teams** (sharing pooled rewards to foster collective traffic flow). |
-| **🏗️ Procedural Environments** | Scale grids from **$5\times5$ up to $8\times8$** with **1 to 5 agents**, featuring 5 distinct obstacle layouts: *Standard Industrial*, *Winding Maze Corridor*, *Center Bottleneck Gate*, *Random Hazard Clusters*, and *Open Empty Arena*. |
-| **🕹️ 3D Cyber-Robot Studio** | A Three.js-powered 3D viewport featuring animated robotic agents, glowing energy goals, industrial hazard pillars, orbit controls, and smooth step interpolation. |
-| **📊 Live Policy Heatmaps** | Real-time inspection of tabular state-action values ($Q(s,a)$) with greedy action arrows ($\arg\max_a Q(s,a)$) overlaying a 2D tactical grid. |
-| **📈 Real-Time Telemetry** | Asynchronous WebSocket streaming providing live Chart.js reward evolution curves, instant step telemetry, collision tracking, and exploration decay metrics. |
-| **🎛️ Live Hyperparameter Injection** | Adjust learning rates ($\alpha$), discount factors ($\gamma$), exploration decay, and simulation speed on the fly directly from the studio dashboard. |
+| **🕹️ 3D Cyber-Physical Arena** | Render real-time multi-agent spatial interactions, animated movement, goal pedestals, and obstacle boundaries using Three.js orbit controls. |
+| **🗺️ 2D Tactical Grid** | Top-down view providing exact coordinate tracking and spatial path convergence across multiple agents. |
+| **📊 Policy & Q-Table Heatmap** | Inspect live state-action values ($Q(s,a)$) and directional optimal action arrows ($\arg\max_a Q(s,a)$) rendered directly over the environment grid. |
+| **📈 Real-Time Telemetry** | Stream live reward evolution curves, step counts, collision metrics, and exploration decay curves via WebSocket and Chart.js. |
+| **🧠 Multi-Algorithm Suite** | Compare tabular methods (**Q-Learning**, **SARSA**, **Monte Carlo Control**) and deep neural approximation (**Deep Q-Network - DQN Lite**). |
+| **🔍 Exploration Strategies** | Dynamically adjust exploration behavior using **$\epsilon$-Greedy**, **Boltzmann / Softmax**, or **Upper Confidence Bound (UCB)**. |
+| **🤝 Team Dynamics Modes** | Observe non-stationary environment behavior in **Independent Learning** mode vs. collective behavior in **Cooperative (Shared Reward)** mode. |
+| **🎛️ On-The-Fly Tuning** | Inject dynamic hyperparameter changes (learning rate $\alpha$, discount factor $\gamma$, decay $\lambda$, simulation speed) without restarting the server. |
 
 ---
 
-## 🏗️ System Architecture & Directory Structure
+## 🏗️ System Architecture & Codebase Structure
 
-The platform follows a decoupled client-server architecture where the backend simulation engine streams high-frequency state transitions to the rich frontend visualizer via WebSockets.
+The platform uses a decoupled client-server architecture. The FastAPI backend executes the environment step logic and agent policy updates, streaming step payloads to the frontend studio via WebSockets.
 
 ```
-Marl - Multiagent Reinforcement Learning/
-│── app/
-│   │── __init__.py         # Package initializer
-│   │── agent.py            # Agent factory & wrapper logic
-│   │── algorithms.py       # Modular RL algorithms & exploration strategies
-│   │── env.py              # Multi-agent grid dynamics & obstacle generators
-│   │── train.py            # Asynchronous simulation loop & WebSocket generator
-│   └── main.py             # FastAPI server, WebSocket hub & static mounts
+                  +-----------------------------------+
+                  |   FastAPI Backend (app/main.py)   |
+                  +-----------------------------------+
+                                    |
+        +---------------------------+---------------------------+
+        |                           |                           |
+        v                           v                           v
++---------------+           +---------------+           +---------------+
+|  Environment  | <-------> |  Agent Pool   | <-------> | Simulation    |
+| (app/env.py)  |           | (app/agent.py)|           | Engine        |
++---------------+           +---------------+           | (app/train.py)|
+                                                        +---------------+
+                                                                |
+                                             WebSocket Stream   | (JSON Frames:
+                                             ws://localhost:8000/ws
+                                                                v
+                                    +-----------------------------------+
+                                    |  Web Dashboard (marl-dashboard/)  |
+                                    +-----------------------------------+
+                                    | - 3D Arena (renderer-3d.js)       |
+                                    | - 2D Grid (renderer-2d.js)        |
+                                    | - Policy Map (renderer-policy.js) |
+                                    | - Telemetry Charts (app.js)       |
+                                    +-----------------------------------+
+```
+
+### Directory Layout
+
+```
+MARL/
+├── app/                        # Python Backend Simulation Engine
+│   ├── __init__.py             # Package marker
+│   ├── agent.py                # Agent instantiation & factory wrappers
+│   ├── algorithms.py           # Core RL algorithms & exploration strategies
+│   ├── env.py                  # Grid environment dynamics & procedural obstacle presets
+│   ├── main.py                 # FastAPI server, WebSocket endpoints & static file mounts
+│   └── train.py                # Asynchronous training loop & state streaming logic
 │
-│── marl-dashboard/
-│   │── index.html          # Studio UI layout & control panels
-│   │── css/
-│   │   └── styles.css      # Modern dark-mode aesthetics & glassmorphism
+├── marl-dashboard/             # Frontend Visualization Studio
+│   ├── index.html              # Studio interface layout & dynamic control panel
+│   ├── css/
+│   │   └── styles.css          # Dark-mode dashboard styling & grid layout
 │   └── js/
-│       │── app.js          # Core UI controller & event listeners
-│       │── chart-config.js # Chart.js real-time analytics configuration
-│       │── renderer-2d.js  # 2D top-down tactical grid visualizer
-│       │── renderer-3d.js  # Three.js 3D robotics arena visualizer
-│       │── renderer-policy.js # Q-Table heatmap & optimal action arrow inspector
-│       └── websocket.js    # WebSocket client manager & reconnect handler
+│       ├── app.js              # Core UI state manager & event handlers
+│       ├── chart-config.js     # Chart.js telemetry charts initialization
+│       ├── renderer-2d.js      # 2D tactical grid rendering engine
+│       ├── renderer-3d.js      # Three.js 3D arena visualizer engine
+│       ├── renderer-policy.js  # Q-table heatmap & greedy action arrow inspector
+│       └── websocket.js        # Reconnecting WebSocket client manager
 │
-│── README.md               # Comprehensive project documentation
-└── requirements.txt        # Backend dependencies (FastAPI, Uvicorn)
-```
-
-### **Architecture Data Flow**
-```
-+-----------------------------------------------------------------------------------+
-|                            FastAPI Backend Server (main.py)                       |
-|                                                                                   |
-|  +--------------------+      +--------------------+      +---------------------+  |
-|  |  Grid Environment  | <--> |   RL Agent Pool    | <--> | Async Training Loop |  |
-|  |     (env.py)       |      |  (algorithms.py)   |      |     (train.py)      |  |
-|  +--------------------+      +--------------------+      +---------------------+  |
-+---------------------------------------------------------+-------------------------+
-                                                          |
-                                                          | Async WebSocket Stream
-                                                          | (JSON Payloads: init/step/end)
-                                                          v
-+-----------------------------------------------------------------------------------+
-|                        MARL Web Studio (marl-dashboard/)                          |
-|                                                                                   |
-|  +--------------------+      +--------------------+      +---------------------+  |
-|  |   3D Cyber Arena   |      |  2D Tactical Grid  |      |   Policy Inspector  |  |
-|  |  (renderer-3d.js)  |      |  (renderer-2d.js)  |      | (renderer-policy.js)|  |
-|  +--------------------+      +--------------------+      +---------------------+  |
-|                                                                                   |
-|  +-----------------------------------------------------------------------------+  |
-|  |           Real-Time Telemetry & Chart.js Analytics (app.js / chart.js)     |  |
-|  +-----------------------------------------------------------------------------+  |
-+-----------------------------------------------------------------------------------+
+├── Procfile                    # Deployment execution target
+├── railway.json                # Deployment configuration file
+├── README.md                   # Project documentation
+└── requirements.txt            # Python dependencies (FastAPI, Uvicorn)
 ```
 
 ---
 
-## 🧠 Mathematical Foundations & Core RL Theory
+## 🧠 Theoretical Foundations & RL Formulations
 
 ### 1. Markov Decision Process (MDP)
-The multi-agent navigation task is modeled as a tuple $(S, A, P, R, \gamma)$ across $N$ interacting agents:
+The multi-agent environment operates as a discrete-time Markov Decision Process across $N$ agents:
 
-| Symbol | Definition | Project Implementation |
-| :--- | :--- | :--- |
-| $S$ | State Space | Grid coordinates $(x_i, y_i) \in [0, \text{size}-1]^2$ for each agent $i$ |
-| $A$ | Action Space | Discrete actions: `0: Up (North)`, `1: Down (South)`, `2: Left (West)`, `3: Right (East)` |
-| $P$ | Transition Dynamics | Deterministic spatial displacement subject to boundary constraints and obstacle bounces |
-| $R$ | Reward Function | Shaped scalar feedback incentivizing speed, safety, and goal accomplishment |
-| $\gamma$ | Discount Factor | $\gamma \in (0, 1)$ balancing immediate vs. future cumulative returns |
+- **State Space ($S$)**: Grid position $(x_i, y_i) \in [0, \text{grid\_size}-1]^2$ for each agent $i$.
+- **Action Space ($A$)**: Discrete direction choices:
+  - `0`: Up (North)
+  - `1`: Down (South)
+  - `2`: Left (West)
+  - `3`: Right (East)
+- **Transition Model ($P$)**: Deterministic movement subject to grid boundaries and obstacle collisions (bounces back to prior state upon hitting an obstacle).
+- **Discount Factor ($\gamma$)**: $\gamma \in [0, 1)$ balancing immediate rewards against long-term future return.
 
----
+### 2. Reinforcement Learning Algorithms
 
-### 2. Reinforcement Learning Algorithms Formulation
-
-#### **A. Q-Learning (Off-Policy Temporal Difference Control)**
-Q-Learning learns the optimal action-value function $Q^*(s, a)$ independently of the policy being followed during exploration. The value update uses the maximum future reward of the next state:
+#### A. Q-Learning (Off-Policy TD Control)
+Learns optimal state-action values independently of the exploration policy being executed:
 $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right]$$
-where $\alpha$ is the learning rate and $\left( r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right)$ is the **Temporal Difference (TD) Error**.
 
-#### **B. SARSA (On-Policy Temporal Difference Control)**
-SARSA (**S**tate-**A**ction-**R**eward-**S**tate-**A**ction) updates the action-value function based on the action $a'$ actually executed by the agent under its current exploration policy:
+#### B. SARSA (On-Policy TD Control)
+Updates action-values based on the actual next action $a'$ selected by the current exploration policy:
 $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma Q(s', a') - Q(s, a) \right]$$
-> *Why use SARSA?* Because SARSA accounts for exploration noise during training, it learns safer paths around hazards compared to Q-Learning's aggressive edge-hugging behavior.
+*Educational Insight*: SARSA accounts for potential random exploration steps during learning, yielding safer paths around hazard walls compared to Q-Learning.
 
-#### **C. Monte Carlo Control (Return Estimation)**
-Instead of step-by-step TD updates, Monte Carlo agents record complete episode trajectories $(s_0, a_0, r_0, s_1, a_1, r_1, \dots, s_T)$ and backpropagate the discounted cumulative return $G_t$ at the end of the episode:
-$$G_t = \sum_{k=0}^{T-t-1} \gamma^k r_{t+k+1}$$
-$$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha (G_t - Q(s_t, a_t))$$
+#### C. Monte Carlo Control (Episode Return Backpropagation)
+Accumulates entire trajectory returns $G_t = \sum_{k=0}^{T-t-1} \gamma^k r_{t+k+1}$ at episode termination and performs incremental mean updates:
+$$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left( G_t - Q(s_t, a_t) \right)$$
 
-#### **D. Deep Q-Network (DQN Lite)**
-To demonstrate deep reinforcement learning without heavy external ML dependencies, the project includes a custom **pure-Python/NumPy 2-Layer Neural Q-Approximator**:
-- **State Encoding**: Normalized coordinates $\left[ \frac{x}{\text{size}-1}, \frac{y}{\text{size}-1} \right]$.
-- **Network Architecture**: Input Layer (2 nodes) $\to$ Hidden Layer (16 nodes with ReLU activation) $\to$ Output Layer (4 action Q-values).
-- **Experience Replay Buffer**: Stores up to 500 transitions $(s, a, r, s', \text{done})$ and uniformly samples mini-batches ($B=16$) to break temporal correlation.
-- **Target Network Synchronization**: Maintains a cloned target network $(W_1^{\text{target}}, W_2^{\text{target}})$ updated every 20 steps to stabilize gradient descent against the loss function:
-$$\mathcal{L}(\theta) = \frac{1}{B} \sum_{i=1}^B \left( y_i - Q(s_i, a_i; \theta) \right)^2, \quad y_i = r_i + \gamma \max_{a'} Q(s'_i, a'; \theta^{\text{target}})$$
+#### D. Deep Q-Network (DQN Lite)
+A lightweight 2-layer neural approximator implemented in pure Python/NumPy:
+- **Input Encoding**: Normalized coordinates $\left[ \frac{x}{\text{size}-1}, \frac{y}{\text{size}-1} \right]$.
+- **Architecture**: 2 Input Nodes $\to$ 16 Hidden Nodes (ReLU) $\to$ 4 Output Q-Values.
+- **Experience Replay Buffer**: Stores up to 500 transitions $(s, a, r, s', \text{done})$ to sample uniform mini-batches ($B=16$).
+- **Target Network**: Synchronized every 20 steps to stabilize learning targets:
+  $$\mathcal{L}(\theta) = \frac{1}{B} \sum_{i=1}^B \left( r_i + \gamma \max_{a'} Q(s'_i, a'; \theta^{\text{target}}) - Q(s_i, a_i; \theta) \right)^2$$
 
----
+### 3. Exploration Strategies
 
-### 3. Exploration vs. Exploitation Strategies
+1. **$\epsilon$-Greedy**:
+   $$\pi(a \mid s) = \begin{cases} \text{Random action} & \text{with probability } \epsilon \\ \arg\max_{a'} Q(s, a') & \text{with probability } 1 - \epsilon \end{cases}$$
+   $\epsilon$ decays per episode: $\epsilon_{t+1} = \max(\epsilon_{\min}, \epsilon_t \cdot \lambda_{\text{decay}})$.
 
-```
-        Exploration vs. Exploitation Spectrum
-        
-   Pure Random <-------------------------------> Pure Greedy
-  (High ε / High T)                         (ε -> 0 / UCB / Low T)
-        |                                             |
-   Epsilon-Greedy                              Boltzmann & UCB
- (Decaying random steps)                   (Probabilistic / Confidence)
-```
-
-1. **$\epsilon$-Greedy Exploration**:
-   $$\pi(a \mid s) = \begin{cases} \text{Random action } \in A & \text{with probability } \epsilon \\ \arg\max_{a'} Q(s, a') & \text{with probability } 1 - \epsilon \end{cases}$$
-   where $\epsilon$ decays exponentially per episode: $\epsilon_{t+1} = \max(\epsilon_{\min}, \epsilon_t \cdot \lambda_{\text{decay}})$.
-
-2. **Boltzmann / Softmax Exploration**:
-   Assigns selection probabilities proportional to exponentiated Q-values modulated by a temperature parameter $T$:
-   $$P(a \mid s) = \frac{\exp\left( \frac{Q(s, a)}{T} \right)}{\sum_{a' \in A} \exp\left( \frac{Q(s, a')}{T} \right)}$$
-   High $T$ produces nearly uniform random actions; as $T \to 0$, action selection becomes deterministically greedy.
+2. **Boltzmann / Softmax**:
+   Calculates action probabilities proportional to exponentiated state-action values divided by temperature $T$:
+   $$P(a \mid s) = \frac{\exp(Q(s, a) / T)}{\sum_{a'} \exp(Q(s, a') / T)}$$
 
 3. **Upper Confidence Bound (UCB)**:
-   Balances exploitation with systematic exploration of infrequently tested state-action pairs:
-   $$A_t = \arg\max_{a \in A} \left[ Q(s, a) + c \sqrt{\frac{\ln N(s)}{N(s, a)}} \right]$$
-   where $N(s)$ is the total visitation count of state $s$, $N(s,a)$ is the visitation count of taking action $a$ in state $s$, and $c > 0$ controls confidence weighting.
+   Selects actions by balancing high Q-values with state-action visitation uncertainty:
+   $$A_t = \arg\max_{a} \left[ Q(s, a) + c \sqrt{\frac{\ln N(s)}{N(s, a)}} \right]$$
+
+### 4. Reward Matrix & Team Modes
+
+#### Reward Structure
+- **Step Time Penalty**: `-1.0` (Encourages path brevity)
+- **Obstacle Hazard Collision**: `-5.0` (Punishes hitting pillars; causes bounce-back)
+- **Inter-Agent Collision**: `-10.0` (Penalizes occupying the same coordinate as another agent)
+- **Goal Reached**: `+20.0` (Rewards reaching the energy pedestal)
+
+#### Multi-Agent Team Dynamics
+- **Independent Learning (IQL)**: Each agent updates its own policy using its individual reward $r_i$. Other agents are treated as part of an evolving non-stationary environment.
+- **Cooperative Team (Shared Rewards)**: Team rewards are averaged across all agents ($r_{\text{shared}} = \frac{1}{N} \sum_{i=1}^N r_i$). All agents receive $r_{\text{shared}}$, encouraging cooperative behavior such as waiting for another agent at bottlenecks.
 
 ---
 
-### 4. Reward Shaping & Multi-Agent Dynamics
+## ⚡ Quickstart Guide
 
-#### **Reward Matrix**
-| Event | Reward ($R$) | Behavioral Incentive |
-| :--- | :--- | :--- |
-| **Step Penalty** | `-1.0` | Encourages agents to find the shortest possible path to the goal |
-| **Obstacle Collision** | `-5.0` | Punishes hitting hazard pillars; agents bounce back to previous cell |
-| **Inter-Agent Collision** | `-10.0` | Strongly penalizes occupying the same grid cell as another agent |
-| **Goal Accomplishment** | `+20.0` | Rewards reaching the designated energy pedestal |
+### Prerequisites
+- **Python 3.8+**
+- Modern web browser (Chrome, Firefox, Edge, Safari) supporting WebGL and WebSockets.
 
-#### **Independent vs. Cooperative Team Dynamics**
-- **Independent Mode (`IQL`)**: Each agent $i$ updates its parameters solely using its individual reward $r_i$. Other agents are treated as moving parts of a non-stationary environment.
-- **Cooperative Mode (`Shared`)**: Rewards are pooled and averaged across the team: $r_{\text{shared}} = \frac{1}{N} \sum_{i=1}^N r_i$. All agents receive $r_{\text{shared}}$, encouraging self-sacrifice (e.g., waiting at a bottleneck) to maximize collective efficiency.
+### 1. Installation
+Clone the repository and install the backend dependencies:
+
+```bash
+git clone https://github.com/shriyanshkush/Multi-Agent-Reinforcement-Learning-Based-Autonomous-Navigation-System.git
+cd MARL
+pip install -r requirements.txt
+```
+
+### 2. Launching the Backend Server
+Run the FastAPI application with Uvicorn:
+
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+*Alternatively, run:*
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+### 3. Opening the Dashboard Visualizer
+Open your browser and navigate to:
+```
+http://localhost:8000
+```
+The studio will load and automatically connect to `ws://localhost:8000/ws`. A simulation run will begin streaming immediately!
 
 ---
 
-## 🕹️ Interactive Dashboard Guide & Viewports
+## 🕹️ Interactive Visualizer & Inspection Guide
 
-The frontend studio provides three specialized visual inspection modes:
+### 1. Viewport Selection Modes
+- **3D Cyber Arena**: Complete 3D layout showing metallic agent models, glowing green energy goals, and obstacle columns.
+  - *Controls*: `Left Click + Drag` to orbit; `Right Click + Drag` to pan; `Scroll` to zoom.
+- **2D Tactical View**: High-contrast top-down view for observing multi-agent positioning and path overlaps.
+- **Policy Heatmap**: Visualizes **Agent 0**'s learned internal state-action matrix ($Q(s,a)$). Darker blue cells indicate higher state value; white directional arrows display the greedy policy action $\arg\max_a Q(s,a)$.
 
-### 1. 🕹️ 3D Cyber-Robot Arena
-- Built with **Three.js** featuring custom 3D geometries, materials, and point lighting.
-- **Robotic Agents**: Rendered as metallic cylinders with animated directional indicators and status domes.
-- **Energy Goal**: A glowing green pedestal with a rotating halo ring marking the target coordinate.
-- **Hazard Pillars**: Crimson industrial columns marking blocked grid cells.
-- **Controls**: Use `Left Click + Drag` to orbit around the arena, `Right Click + Drag` to pan, and `Scroll Wheel` to zoom.
-
-### 2. 🗺️ 2D Tactical Grid
-- High-contrast top-down view ideal for inspecting precise coordinates and simultaneous trajectory crossings.
-- Displays color-coded agent badges along with real-time status indicators.
-
-### 3. 📊 Q-Table & Policy Inspector
-- Visualizes the internal representation of **Agent 0** across every grid cell.
-- Each cell shows a **Heatmap** (darker blue indicating higher state-action value) along with **Greedy Action Arrows** pointing in the direction of the highest Q-value ($\arg\max_a Q(s,a)$).
+### 2. Live Control Panel Parameters
+- **Algorithm**: Select between `Q-Learning`, `SARSA`, `Monte Carlo`, or `DQN (Lite)`.
+- **Exploration Method**: Choose `Epsilon-Greedy`, `Boltzmann (Softmax)`, or `UCB`.
+- **Team Dynamics**: Switch between `Independent Learners` and `Cooperative Team`.
+- **Grid Configuration**: Set grid dimensions ($5\times5$ to $8\times8$), agent count ($1$ to $5$), and obstacle presets (`Standard`, `Maze`, `Bottleneck`, `Random`, `Open`).
+- **Hyperparameter Injection**: Adjust learning rate ($\alpha$), discount factor ($\gamma$), initial exploration ($\epsilon$), and decay rate ($\lambda$) on the fly.
 
 ---
 
-## ⚡ WebSocket Protocol & API Specifications
+## 🔌 WebSocket API Reference
 
-The backend server communicates with the studio client over high-speed WebSockets at `ws://localhost:8000/ws`.
+The client and server exchange JSON messages over `ws://localhost:8000/ws`.
 
-### **Client Command Payloads (Outgoing)**
-To initiate or modify simulation loops, the client sends JSON commands:
+### Client Command Schema
+To start, pause, resume, or stop a simulation stream, send a command payload:
+
 ```json
 {
   "command": "start",
@@ -219,108 +235,46 @@ To initiate or modify simulation loops, the client sends JSON commands:
   }
 }
 ```
-*Supported commands: `start`, `pause`, `resume`, `stop`.*
 
-### **Server Stream Payloads (Incoming)**
+### Server Stream Frames
 
-#### **1. Initialization Frame (`init`)**
-Sent when a simulation run is created:
-```json
-{
-  "type": "init",
-  "grid_size": 5,
-  "num_agents": 3,
-  "obstacles": [[2, 2], [1, 3], [3, 1]],
-  "goal": [4, 4],
-  "config": { ... }
-}
-```
-
-#### **2. Step Telemetry Frame (`step`)**
-Sent at each simulation step (frequency governed by `delay`):
-```json
-{
-  "type": "step",
-  "episode": 1,
-  "step": 12,
-  "positions": [[0, 2], [1, 1], [2, 0]],
-  "actions": [3, 1, 0],
-  "rewards": [-1.0, -1.0, -5.0],
-  "metrics": {
-    "epsilon": 0.48,
-    "collisions": 1
-  },
-  "q_table": {
-    "0,0": [0.0, -1.2, 0.0, 3.4],
-    "0,1": [1.1, 2.5, -0.8, 4.2]
-  }
-}
-```
-
-#### **3. Episode Summary Frame (`episode_end`)**
-Sent upon episode completion or goal attainment:
-```json
-{
-  "type": "episode_end",
-  "episode": 1,
-  "total_reward": 14.5,
-  "agent_rewards": [18.0, -2.5, -1.0],
-  "steps_taken": 24,
-  "collisions": 1,
-  "goal_reached": true
-}
-```
+1. **`init` Frame**: Transmitted at simulation start containing initial environment metadata (grid size, obstacle positions, goal coordinates).
+2. **`step` Frame**: Emitted at each environment step containing agent coordinates, actions executed, step rewards, exploration decay metric, collision counts, and Agent 0's $Q(s,a)$ dictionary.
+3. **`episode_end` Frame**: Emitted at episode termination with total cumulative reward, per-agent rewards, step count, and goal status.
 
 ---
 
-## 🚀 Getting Started & Quickstart Guide
+## 🧪 Learning Experiments & Hands-On Case Studies
 
-### Prerequisites
-- **Python 3.8+** installed on your system.
-- A modern web browser supporting WebSockets and WebGL (Chrome, Edge, Firefox, or Safari).
+Try these interactive experiments in the dashboard to visually explore key MARL concepts:
 
-### 1. Clone the Repository & Install Dependencies
-Open your terminal inside the workspace directory and install the required Python packages:
-```bash
-# Install backend dependencies
-pip install -r requirements.txt
-```
-*(If `requirements.txt` is missing, run: `pip install fastapi uvicorn`)*
+### Experiment 1: Bottleneck Navigation (Independent vs. Cooperative)
+1. Set **Obstacles** to `Center Bottleneck Gate` and **Num Agents** to `3`.
+2. Run with **Team Mode** set to `Independent Learners`. Observe agent collisions and gridlocking at the gate as each agent greedily attempts to pass first.
+3. Switch **Team Mode** to `Cooperative Team (Shared Rewards)`. Observe how agents learn turn-taking and yielding behavior to maximize team throughput.
 
-### 2. Launch the Production Studio Backend
-Start the FastAPI server with live reloading enabled:
-```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-or run `python -m uvicorn app.main:app --reload`.
+### Experiment 2: Path Safety (Q-Learning vs. SARSA)
+1. Select **Obstacles** `Standard` or `Maze`.
+2. Train with **Q-Learning**. Notice how agents learn aggressive paths directly adjacent to hazard obstacles.
+3. Train with **SARSA**. Observe how SARSA's on-policy updates produce safer trajectories that maintain distance from hazard pillars.
 
-### 3. Access the Studio Dashboard
-Open your web browser and navigate to:
-```
-http://localhost:8000
-```
-Once opened, the dashboard will automatically connect to the WebSocket server (`ws://localhost:8000/ws`), display **Connected ✅** in the header, and begin running the default 3D simulation!
+### Experiment 3: Exploration Efficiency (UCB vs. Epsilon-Greedy)
+1. Compare `Epsilon-Greedy` against `Upper Confidence Bound (UCB)` on larger grids ($7\times7$ or $8\times8$).
+2. Observe how UCB systematically explores unvisited state-action pairs earlier in training compared to purely random decay steps.
 
 ---
 
-## 💡 Troubleshooting & Best Practices
+## 🛠️ Troubleshooting & FAQ
 
-- **Slow Convergence or Circling Behavior**:
-  If agents circle endlessly or fail to reach the goal, try increasing the **Discount Factor ($\gamma$) to `0.95`** so agents value long-term goal attainment over immediate step penalties.
-- **Congestion in Bottlenecks**:
-  When testing the `Center Bottleneck Gate` obstacle layout with 3+ agents, switch **MARL Team Goal** to `Cooperative Team (Shared Rewards)`. This incentivizes agents to yield right-of-way rather than colliding in the doorway.
-- **Exploring Deep Q-Network (DQN Lite)**:
-  Because DQN uses function approximation, it requires more steps to stabilize than tabular methods. Set **Decay Rate per Episode** to `0.99` and run for `50+ Episodes` to observe smooth neural policy convergence.
-
----
-
-## 🔮 Roadmap & Future Horizons
-
-- [ ] **Multi-Agent Deep Deterministic Policy Gradients (MADDPG)**: Centralized training with decentralized execution for continuous action spaces.
-- [ ] **Inter-Agent Communication Channels**: Implementing differentiable communication networks (e.g., CommNet / DIAL) where agents transmit hidden vector messages.
-- [ ] **Dynamic & Moving Obstacles**: Introducing patrolling hazards that force agents to learn predictive temporal avoidance.
-- [ ] **Custom Grid Editor**: Frontend point-and-click layout builder allowing users to design and export custom industrial floor plans.
+- **Agents circling or failing to converge**:
+  - Increase the discount factor ($\gamma$) to `0.95` so agents value reaching the target goal over immediate step time penalties.
+- **Deep Q-Network (DQN Lite) taking longer to learn**:
+  - Neural value approximation requires more step iterations than tabular updates. Set episodes to `50+` and decay rate to `0.99` for smooth policy convergence.
+- **WebSocket Connection Failure**:
+  - Ensure Uvicorn is running on port `8000` (`http://localhost:8000`). If using a custom port, update the WebSocket client connection string in `marl-dashboard/js/websocket.js`.
 
 ---
 
-*Built by Shriyansh Kushwaha.*
+## 📄 License & Attribution
+
+Developed by [Shriyansh Kushwaha](https://github.com/shriyanshkush). Open source for educational, learning, and research purposes.

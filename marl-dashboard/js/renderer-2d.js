@@ -33,16 +33,8 @@ class Renderer2D {
                 const coordKey = `${r},${c}`;
                 if (obstacleSet.has(coordKey)) {
                     cell.classList.add('obstacle-cell');
-                    const icon = document.createElement('span');
-                    icon.className = 'obstacle-icon';
-                    icon.innerText = '⚠️';
-                    cell.appendChild(icon);
                 } else if (goalCoord === coordKey) {
                     cell.classList.add('goal-cell');
-                    const icon = document.createElement('span');
-                    icon.className = 'goal-icon';
-                    icon.innerText = '🎯';
-                    cell.appendChild(icon);
                 }
 
                 this.gridContainer.appendChild(cell);

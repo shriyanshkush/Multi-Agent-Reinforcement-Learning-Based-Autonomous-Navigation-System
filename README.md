@@ -277,4 +277,4 @@ Try these interactive experiments in the dashboard to visually explore key MARL 
 
 ## 📄 License & Attribution
 
-Developed by [Shriyansh Kushwaha](https://github.com/shriyanshkush). Open source for educational, learning, and research purposes.
+Developed by [Shriyansh Kushwaha](https://github.com/shriyanshkush), [Aman Jha](https://github.com/TheNucleya02) Open source for educational, learning, and research purposes.

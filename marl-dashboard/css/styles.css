@@ -1,4 +1,8 @@
 :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
     --bg-main: #0b0c10;
     --bg-card: #1f2833;
     --bg-panel: #141a21;
@@ -24,7 +28,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-main);
     color: var(--text-primary);
     overflow-x: hidden;
@@ -62,19 +66,8 @@ body {
     gap: 16px;
 }
 
-.logo-icon {
-    font-size: 2.4rem;
-    filter: drop-shadow(0 0 8px var(--accent-cyan));
-    animation: floatLogo 4s ease-in-out infinite;
-}
-
-@keyframes floatLogo {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-}
-
 h1 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.55rem;
     color: var(--text-heading);
@@ -100,7 +93,7 @@ h1 {
 }
 
 .btn {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.86rem;
     font-weight: 600;
     padding: 8px 16px;
@@ -207,7 +200,7 @@ h1 {
 }
 
 .panel-header h3 {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.05rem;
     color: var(--text-heading);
     font-weight: 600;
@@ -240,7 +233,7 @@ h1 {
     color: var(--text-heading);
     padding: 8px 12px;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.88rem;
     outline: none;
     transition: border-color var(--transition-fast);
@@ -267,7 +260,7 @@ h1 {
 }
 
 .slider-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-weight: 600;
     color: var(--accent-cyan);
 }
@@ -318,7 +311,7 @@ h1 {
     background: transparent;
     border: none;
     color: var(--text-primary);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-display);
     font-size: 0.9rem;
     font-weight: 600;
     padding: 8px 14px;
@@ -411,8 +404,6 @@ h1 {
 .cell.obstacle-cell { background: rgba(239, 68, 68, 0.12); border: 1px dashed var(--danger); }
 .cell.goal-cell { background: rgba(16, 185, 129, 0.12); border: 1px dashed var(--success); }
 
-.obstacle-icon, .goal-icon { font-size: 1.4rem; position: absolute; }
-
 .agent {
     width: 36px;
     height: 36px;
@@ -478,7 +469,7 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     min-width: 80px;
     min-height: 80px;
@@ -521,18 +512,18 @@ h1 {
 }
 
 .stat-label { font-size: 0.74rem; color: var(--text-primary); text-transform: uppercase; font-weight: 600; }
-.stat-value { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; margin-top: 4px; }
+.stat-value { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; margin-top: 4px; }
 .text-accent { color: var(--accent-cyan); }
 .text-blue { color: var(--accent-blue); }
 .text-warning { color: var(--warning); }
 .text-danger { color: var(--danger); }
 
 .style-rewards-header { margin-bottom: 8px; border-bottom: none; }
-.style-rewards-header h4 { font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text-heading); }
+.style-rewards-header h4 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-heading); }
 .badge-status { background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
 
 .reward-list-container {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.86rem;
     background: var(--bg-card);
     padding: 12px;

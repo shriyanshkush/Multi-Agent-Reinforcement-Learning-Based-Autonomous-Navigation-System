@@ -7,7 +7,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -20,7 +20,6 @@
     <!-- Header / Navbar -->
     <header class="studio-header">
         <div class="header-brand">
-            <div class="logo-icon">🤖</div>
             <div>
                 <h1>MARL Autonomous Production Studio</h1>
                 <p class="subtitle">3D Cyber-Physical Multi-Agent Reinforcement Learning Platform</p>
@@ -30,16 +29,16 @@
         <div class="header-actions">
             <div class="control-bar">
                 <button id="btnStart" class="btn btn-primary" title="Start or Restart Training with current settings">
-                    <span class="btn-icon">🚀</span> Start Training
+                    Start Training
                 </button>
                 <button id="btnPause" class="btn btn-secondary" title="Pause simulation">
-                    <span class="btn-icon">⏸️</span> Pause
+                    Pause
                 </button>
                 <button id="btnResume" class="btn btn-secondary" style="display: none;" title="Resume simulation">
-                    <span class="btn-icon">▶️</span> Resume
+                    Resume
                 </button>
                 <button id="btnStop" class="btn btn-danger" title="Stop and reset">
-                    <span class="btn-icon">⏹️</span> Reset
+                    Reset
                 </button>
             </div>
             <div id="connectionStatus" class="status-badge status-disconnected">
@@ -53,7 +52,7 @@
         <!-- Left Sidebar: Configuration & Hyperparameters -->
         <aside class="panel sidebar-config">
             <div class="panel-header">
-                <h3>⚙️ Algorithm & Exploration</h3>
+                <h3>Algorithm & Exploration</h3>
             </div>
             
             <div class="config-section">
@@ -80,7 +79,7 @@
             </div>
 
             <div class="panel-header" style="margin-top: 16px;">
-                <h3>🎛️ Hyperparameters</h3>
+                <h3>Hyperparameters</h3>
             </div>
 
             <div class="config-sliders">
@@ -118,7 +117,7 @@
             </div>
 
             <div class="panel-header" style="margin-top: 16px;">
-                <h3>🌐 Environment Setup</h3>
+                <h3>Environment Setup</h3>
             </div>
 
             <div class="config-section">
@@ -163,7 +162,7 @@
             </div>
 
             <button id="btnApplyConfig" class="btn btn-accent w-100 style-apply-btn">
-                ⚡ Apply Config & Restart Loop
+                Apply Config & Restart Loop
             </button>
         </aside>
 
@@ -172,13 +171,13 @@
             <div class="viewport-header">
                 <div class="tabs-bar">
                     <button class="tab-btn active" data-tab="3d">
-                        <span>🕹️ 3D Cyber-Robot Arena</span>
+                        <span>3D Cyber-Robot Arena</span>
                     </button>
                     <button class="tab-btn" data-tab="2d">
-                        <span>🗺️ 2D Tactical Grid</span>
+                        <span>2D Tactical Grid</span>
                     </button>
                     <button class="tab-btn" data-tab="policy">
-                        <span>📊 Q-Table & Policy Inspector</span>
+                        <span>Q-Table & Policy Inspector</span>
                     </button>
                 </div>
                 <div class="viewport-legend" id="viewportLegend">
@@ -191,7 +190,7 @@
             <div class="viewport-content">
                 <!-- 3D Arena Viewport -->
                 <div id="viewport-3d" class="tab-pane active">
-                    <div class="viewport-overlay-tip">🖱️ Left Click + Drag to Rotate | Right Click + Drag to Pan | Scroll to Zoom</div>
+                    <div class="viewport-overlay-tip">Left Click + Drag to Rotate | Right Click + Drag to Pan | Scroll to Zoom</div>
                     <div id="threeContainer"></div>
                 </div>
 
@@ -217,7 +216,7 @@
         <!-- Right Sidebar: Live Telemetry & Analytics -->
         <aside class="panel sidebar-telemetry">
             <div class="panel-header">
-                <h3>📡 Live Telemetry & Stats</h3>
+                <h3>Live Telemetry & Stats</h3>
             </div>
 
             <div class="stats-grid">
@@ -250,7 +249,7 @@
             </div>
 
             <div class="panel-header" style="margin-top: 18px;">
-                <h3>📈 Performance Analytics</h3>
+                <h3>Performance Analytics</h3>
             </div>
             <div class="chart-wrapper">
                 <canvas id="rewardChart"></canvas>

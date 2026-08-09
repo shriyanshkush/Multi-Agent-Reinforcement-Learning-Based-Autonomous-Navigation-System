@@ -34,14 +34,14 @@ class RendererPolicy {
                     cell.style.border = '1px solid #ef4444';
                     cell.innerHTML = `
                         <span class="coord" style="color:#f87171">[${r},${c}]</span>
-                        <div class="best-arrow" style="font-size:1.1rem; color:#f87171">⚠️ HAZARD</div>
+                        <div class="best-arrow" style="font-size:1.1rem; color:#f87171">HAZARD</div>
                     `;
                 } else if (this.goal === coordKey) {
                     cell.style.background = 'rgba(16, 185, 129, 0.15)';
                     cell.style.border = '1px solid #10b981';
                     cell.innerHTML = `
                         <span class="coord" style="color:#34d399">[${r},${c}]</span>
-                        <div class="best-arrow" style="font-size:1.1rem; color:#34d399">🎯 GOAL</div>
+                        <div class="best-arrow" style="font-size:1.1rem; color:#34d399">GOAL</div>
                     `;
                 } else {
                     cell.innerHTML = `

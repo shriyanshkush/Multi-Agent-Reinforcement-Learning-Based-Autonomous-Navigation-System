@@ -70,11 +70,11 @@ function initChart() {
             scales: {
                 x: { 
                     grid: { color: '#2c3847' }, 
-                    ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' } } 
+                    ticks: { color: '#9ca3af', font: { size: 11, family: 'Plus Jakarta Sans' } } 
                 },
                 y: { 
                     grid: { color: '#2c3847' }, 
-                    ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' } } 
+                    ticks: { color: '#9ca3af', font: { size: 11, family: 'Plus Jakarta Sans' } } 
                 }
             },
             plugins: {
@@ -83,7 +83,7 @@ function initChart() {
                     position: 'top',
                     labels: {
                         color: '#c5c6c7',
-                        font: { size: 11, family: 'Inter' },
+                        font: { size: 11, family: 'Plus Jakarta Sans' },
                         boxWidth: 12,
                         padding: 10
                     }
